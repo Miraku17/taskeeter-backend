@@ -9,20 +9,15 @@ console.log('Database Config:', {
     // Don't log password
 });
 
-// Create connection with promise wrapper
 const db = mysql.createConnection({
     host: process.env.DB_HOST,
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME
-}).promise();  // Add promise() here
+}).promise();
 
-// Handle connection errors
-db.connect()
-    .then(() => {
-        console.log('Connected to MySQL');
-    })
-    .catch(err => {
+db.connect(err => {
+    if (err) {
         console.error('Error connecting to MySQL:', err);
         console.error('Connection details:', {
             host: process.env.DB_HOST,
@@ -30,6 +25,9 @@ db.connect()
             database: process.env.DB_NAME,
             // Don't log password
         });
-    });
+        return;
+    }
+    console.log('Connected to MySQL');
+});
 
 module.exports = db;
